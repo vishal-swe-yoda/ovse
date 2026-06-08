@@ -2,7 +2,9 @@ import json
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from typing import Annotated
+
+from fastapi import Body, Depends, FastAPI, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -135,12 +137,22 @@ def get_mock_callback_xml(
 
 
 @app.post("/api/ovse/callback")
-async def receive_callback(
-    request: Request,
+def receive_callback(
+    xml_body: Annotated[
+        str,
+        Body(
+            media_type="application/xml",
+            examples=[
+                """<Request>
+  <TxnID>00000000-0000-0000-0000-000000000000</TxnID>
+  <Credential>PASTE_SD_JWT_HERE</Credential>
+</Request>"""
+            ],
+        ),
+    ],
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ) -> Response:
-    xml_body = (await request.body()).decode("utf-8")
     return handle_callback_xml(xml_body=xml_body, db=db, settings=settings)
 
 
