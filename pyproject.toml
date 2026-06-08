@@ -1,0 +1,25 @@
+[project]
+name = "ovse"
+version = "0.1.0"
+description = "FastAPI verifier backend for Aadhaar App Web-to-App credential exchange"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cryptography",
+    "fastapi",
+    "psycopg[binary]",
+    "pydantic",
+    "pydantic-settings",
+    "pyjwt",
+    "sqlalchemy",
+    "uvicorn[standard]",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2",
+    "pytest",
+]
+
+[tool.uv]
+package = false
